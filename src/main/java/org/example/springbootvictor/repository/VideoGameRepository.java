@@ -9,13 +9,10 @@ import java.util.List;
 @Repository
 public interface VideoGameRepository extends JpaRepository<VideoGame, Long> {
 
-    // Recherche par nom exact
+    // Recherche par nom
     List<VideoGame> findByName(String name);
 
-    // Recherche par nom contenant une chaîne (plus pratique)
-    List<VideoGame> findByNameContainingIgnoreCase(String name);
-
-    // Recherche par catégorie
+    // Recherche par category
     List<VideoGame> findByCategories_Name(String categoryName);
 
     // Recherche par description

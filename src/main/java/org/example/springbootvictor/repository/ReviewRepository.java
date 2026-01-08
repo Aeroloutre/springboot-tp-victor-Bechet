@@ -8,13 +8,4 @@ import java.util.List;
 
 @Repository
 public interface ReviewRepository extends JpaRepository<Review, Long> {
-
-    // Récupère tous les avis d'un jeu spécifique
-    List<Review> findByVideoGameId(Long videoGameId);
-
-    // Récupère les avis par auteur
-    List<Review> findByAuthorName(String authorName);
-
-    // Optionnel : récupère les avis avec une note minimale
-    List<Review> findByRatingGreaterThanEqual(int rating);
 }
