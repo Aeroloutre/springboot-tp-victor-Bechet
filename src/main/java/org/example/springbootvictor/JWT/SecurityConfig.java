@@ -40,10 +40,10 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.DELETE, "/api/videogames/**").hasRole("ADMIN")
 
                         // Pour les reviews
-                        .requestMatchers(HttpMethod.GET, "/api/reviews/**").permitAll()
-                        .requestMatchers(HttpMethod.POST, "/api/reviews/**").hasRole("ADMIN")
-                        .requestMatchers(HttpMethod.PUT, "/api/reviews/**").hasRole("ADMIN")
-                        .requestMatchers(HttpMethod.DELETE, "/api/reviews/**").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.GET, "/api/review/**").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/api/review/**").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.PUT, "/api/review/**").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.DELETE, "/api/review/**").hasRole("ADMIN")
 
                         // Pour les categories
                         .requestMatchers(HttpMethod.GET, "/api/category/**").permitAll()
