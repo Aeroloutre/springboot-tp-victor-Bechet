@@ -4,6 +4,7 @@ import org.example.springbootvictor.JWT.JwtRequestFilter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
@@ -26,26 +27,39 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
-                .csrf(csrf -> csrf.disable()) // Désactiver CSRF (car on utilise JWT)
+                .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(auth -> auth
-                        // Routes publiques (accessibles sans token)
+
+                        // Route d'authentification
                         .requestMatchers("/api/auth/**").permitAll()
 
-                        // Routes protégées par rôle ADMIN
-                        .requestMatchers("/api/videogames/**").hasRole("ADMIN")
-                        .requestMatchers("/api/categories/**").hasRole("ADMIN")
+                        // Pour les JV
+                        .requestMatchers(HttpMethod.GET, "/api/videogames/**").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/api/videogames/**").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.PUT, "/api/videogames/**").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.DELETE, "/api/videogames/**").hasRole("ADMIN")
 
-                        // Routes accessibles par USER et ADMIN
-                        .requestMatchers("/api/reviews/**").hasAnyRole("USER", "ADMIN")
+                        // Pour les reviews
+                        .requestMatchers(HttpMethod.GET, "/api/reviews/**").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/api/reviews/**").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.PUT, "/api/reviews/**").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.DELETE, "/api/reviews/**").hasRole("ADMIN")
 
-                        // Toutes les autres routes nécessitent une authentification
-                        .anyRequest().authenticated()
+                        // Pour les categories
+                        .requestMatchers(HttpMethod.GET, "/api/category/**").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/api/category/**").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.PUT, "/api/category/**").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.DELETE, "/api/category/**").hasRole("ADMIN")
+
+
+                        // Pour autoriser l'accès aux swaggers
+                        .requestMatchers("/swagger-ui/**", "/v3/api-docs/**").permitAll()
                 )
                 .sessionManagement(session ->
                         session.sessionCreationPolicy(SessionCreationPolicy.STATELESS) // Pas de sessions
                 );
 
-        // Ajouter le filtre JWT avant le filtre d'authentification de Spring
+        // Pour mettre JWT en avant (auto généré)
         http.addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
@@ -53,7 +67,8 @@ public class SecurityConfig {
 
     @Bean
     public PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder(); // Pour hasher les mots de passe
+        return new BCryptPasswordEncoder();
+        // pour hasher les mdp
     }
 
     @Bean
